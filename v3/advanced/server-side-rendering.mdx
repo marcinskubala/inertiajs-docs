@@ -109,8 +109,8 @@ createServer(page =>
         page,
         render: renderToString,
         resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-            return pages[`./Pages/${name}.vue`]
+            const pages = import.meta.glob('./Pages/**/*.vue')
+            return pages[`./Pages/${name}.vue`]()
         },
         setup({ App, props, plugin }) {
             return createSSRApp({
@@ -131,8 +131,8 @@ createServer(page =>
         page,
         render: ReactDOMServer.renderToString,
         resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-            return pages[`./Pages/${name}.jsx`]
+            const pages = import.meta.glob('./Pages/**/*.jsx')
+            return pages[`./Pages/${name}.jsx`]()
         },
         setup: ({ App, props }) => <App {...props} />,
     }),
@@ -148,8 +148,8 @@ createServer(page =>
     createInertiaApp({
         page,
         resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-            return pages[`./Pages/${name}.svelte`]
+            const pages = import.meta.glob('./Pages/**/*.svelte')
+            return pages[`./Pages/${name}.svelte`]()
         },
         setup({ App, props }) {
             return render(App, { props })
@@ -168,7 +168,23 @@ If you prefer not to use the Vite plugin, you may configure SSR manually.
 
 <Steps>
     <Step title="Create an SSR entry point">
-        Create a `resources/js/ssr.js` file within your Laravel project.
+        Create an SSR entry point file within your Laravel project.
+
+        <CodeGroup>
+        ```bash Vue icon="vuejs"
+        touch resources/js/ssr.js
+        ```
+
+        ```bash React icon="react"
+        touch resources/js/ssr.jsx
+        ```
+
+        ```bash Svelte icon="s"
+        touch resources/js/ssr.js
+        ```
+        </CodeGroup>
+
+        This file is going to look very similar to your app entry point, except it's not going to run in the browser, but rather in Node.js. Here's a complete example.
 
         <CodeGroup>
 
@@ -183,8 +199,8 @@ If you prefer not to use the Vite plugin, you may configure SSR manually.
                 page,
                 render: renderToString,
                 resolve: name => {
-                    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-                    return pages[`./Pages/${name}.vue`]
+                    const pages = import.meta.glob('./Pages/**/*.vue')
+                    return pages[`./Pages/${name}.vue`]()
                 },
                 setup({ App, props, plugin }) {
                     return createSSRApp({
@@ -205,8 +221,8 @@ If you prefer not to use the Vite plugin, you may configure SSR manually.
                 page,
                 render: ReactDOMServer.renderToString,
                 resolve: name => {
-                    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-                    return pages[`./Pages/${name}.jsx`]
+                    const pages = import.meta.glob('./Pages/**/*.jsx')
+                    return pages[`./Pages/${name}.jsx`]()
                 },
                 setup: ({ App, props }) => <App {...props} />,
             }),
@@ -222,8 +238,8 @@ If you prefer not to use the Vite plugin, you may configure SSR manually.
             createInertiaApp({
                 page,
                 resolve: name => {
-                    const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-                    return pages[`./Pages/${name}.svelte`]
+                    const pages = import.meta.glob('./Pages/**/*.svelte')
+                    return pages[`./Pages/${name}.svelte`]()
                 },
                 setup({ App, props }) {
                     return render(App, { props })
@@ -238,11 +254,13 @@ If you prefer not to use the Vite plugin, you may configure SSR manually.
     <Step title="Configure Vite">
         Add the `ssr` property to the Laravel Vite plugin configuration.
 
-        ```js vite.config.js
+        <CodeGroup>
+
+        ```js Vue icon="vuejs" vite.config.js
         export default defineConfig({
             plugins: [
                 laravel({
-                    input: ['resources/css/app.css', 'resources/js/app.js'],
+                    input: ['resources/js/app.js'],
                     ssr: 'resources/js/ssr.js', // [!code ++]
                     refresh: true,
                 }),
@@ -250,6 +268,34 @@ If you prefer not to use the Vite plugin, you may configure SSR manually.
             ],
         })
         ```
+
+        ```js React icon="react" vite.config.js
+        export default defineConfig({
+            plugins: [
+                laravel({
+                    input: ['resources/js/app.jsx'],
+                    ssr: 'resources/js/ssr.jsx', // [!code ++]
+                    refresh: true,
+                }),
+                // ...
+            ],
+        })
+        ```
+
+        ```js Svelte icon="s" vite.config.js
+        export default defineConfig({
+            plugins: [
+                laravel({
+                    input: ['resources/js/app.js'],
+                    ssr: 'resources/js/ssr.js', // [!code ++]
+                    refresh: true,
+                }),
+                // ...
+            ],
+        })
+        ```
+
+        </CodeGroup>
     </Step>
 
     <Step title="Update your build script">
@@ -329,14 +375,8 @@ With the server running, you should be able to access your app within the browse
 ## Client-Side Hydration
 
 <ClientSpecific>
-Since your website is now being server-side rendered, you can instruct <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> to "hydrate" the static markup and make it interactive instead of re-rendering all the HTML that we just generated.
+Since your website will be server-side rendered, you should also update your `app.js` file to use hydration instead of normal rendering. This allows <VueSpecific>Vue</VueSpecific><ReactSpecific>React</ReactSpecific><SvelteSpecific>Svelte</SvelteSpecific> to pick up the server-rendered HTML and make it interactive without re-rendering it.
 </ClientSpecific>
-
-<VueSpecific>To enable client-side hydration in a Vue app, update your `app.js` file to use `createSSRApp` instead of `createApp`.</VueSpecific>
-
-<ReactSpecific>To enable client-side hydration in a React app, update your `app.js` file to use `hydrateRoot` instead of `createRoot`.</ReactSpecific>
-
-<SvelteSpecific>To enable client-side hydration in a Svelte app, update your `app.js` file to use `hydrate` instead of `mount` when server rendering.</SvelteSpecific>
 
 <CodeGroup>
 
@@ -347,8 +387,8 @@ import { createInertiaApp } from '@inertiajs/vue3'
 
 createInertiaApp({
     resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-        return pages[`./Pages/${name}.vue`]
+        const pages = import.meta.glob('./Pages/**/*.vue')
+        return pages[`./Pages/${name}.vue`]()
     },
     setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) }) // [!code --]
@@ -366,8 +406,8 @@ import { hydrateRoot } from 'react-dom/client' // [!code ++]
 
 createInertiaApp({
     resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-        return pages[`./Pages/${name}.jsx`]
+        const pages = import.meta.glob('./Pages/**/*.jsx')
+        return pages[`./Pages/${name}.jsx`]()
     },
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />) // [!code --]
@@ -383,8 +423,8 @@ import { hydrate, mount } from 'svelte' // [!code ++]
 
 createInertiaApp({
     resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-        return pages[`./Pages/${name}.svelte`]
+        const pages = import.meta.glob('./Pages/**/*.svelte')
+        return pages[`./Pages/${name}.svelte`]()
     },
     setup({ el, App, props }) {
         mount(App, { target: el, props }) // [!code --]
@@ -501,16 +541,4 @@ To run the SSR server on Laravel Cloud, you may use Cloud's [native support for 
 
 ### Laravel Forge
 
-To run the SSR server on Forge, you should create a new daemon that runs `php artisan inertia:start-ssr` from the root of your app. Or, you may utilize the built-in Inertia integration from your Forge application's management dashboard.
-
-Next, whenever you deploy your application, you can automatically restart the SSR server by calling the `php artisan inertia:stop-ssr` command. This will stop the existing SSR server, forcing a new one to be started by your process monitor.
-
-### Heroku
-
-To run the SSR server on Heroku, update the `web` configuration in your `Procfile` to run the SSR server before starting your web server.
-
-```bash
-web: php artisan inertia:start-ssr & vendor/bin/heroku-php-apache2 public/
-```
-
-Note, you must have the `heroku/nodejs` buildpack installed in addition to the `heroku/php` buildback for the SSR server to run.
+To run the SSR server on Forge, you may enable it via the [Inertia SSR toggle](https://forge.laravel.com/docs/sites/laravel#inertia-server-side-rendering-ssr) in your site's application panel. Forge will create the required daemon and, optionally, update your deploy script to restart the SSR server on each deployment.

@@ -17,6 +17,78 @@ These starter kits are the absolute fastest way to start building a new Inertia 
 
 </Card>
 
+## Prerequisites
+
+Before installing Inertia, you need your client-side framework and its corresponding [Vite plugin](https://laravel.com/docs/vite#vue) installed and configured. You may skip this section if your application already has these set up.
+
+<CodeGroup>
+```bash Vue icon="vuejs"
+npm install vue @vitejs/plugin-vue
+```
+
+```bash React icon="react"
+npm install react react-dom @vitejs/plugin-react
+```
+
+```bash Svelte icon="s"
+npm install svelte @sveltejs/vite-plugin-svelte
+```
+</CodeGroup>
+
+Then, add the framework plugin to your `vite.config.js` file.
+
+<CodeGroup>
+```js Vue icon="vuejs"
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            refresh: true,
+        }),
+        vue(),
+    ],
+})
+```
+
+```js React icon="react"
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.jsx'],
+            refresh: true,
+        }),
+        react(),
+    ],
+})
+```
+
+```js Svelte icon="s"
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.js'],
+            refresh: true,
+        }),
+        svelte(),
+    ],
+})
+```
+</CodeGroup>
+
+For more information on configuring these plugins, consult Laravel's [Vite documentation](https://laravel.com/docs/vite#vue).
+
 ## Installation
 
 <Steps>
@@ -122,7 +194,7 @@ createInertiaApp({
     pages: {
         path: './Pages',
         extension: '.tsx',
-        eager: false,
+        lazy: true,
         transform: (name, page) => name.replace('/', '-'),
     },
 })
@@ -148,8 +220,8 @@ import { createInertiaApp } from '@inertiajs/vue3'
 
 createInertiaApp({
     resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-        return pages[`./Pages/${name}.vue`]
+        const pages = import.meta.glob('./Pages/**/*.vue')
+        return pages[`./Pages/${name}.vue`]()
     },
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
@@ -165,8 +237,8 @@ import { createRoot } from 'react-dom/client'
 
 createInertiaApp({
     resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
-        return pages[`./Pages/${name}.jsx`]
+        const pages = import.meta.glob('./Pages/**/*.jsx')
+        return pages[`./Pages/${name}.jsx`]()
     },
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />)
@@ -180,8 +252,8 @@ import { mount } from 'svelte'
 
 createInertiaApp({
     resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-        return pages[`./Pages/${name}.svelte`]
+        const pages = import.meta.glob('./Pages/**/*.svelte')
+        return pages[`./Pages/${name}.svelte`]()
     },
     setup({ el, App, props }) {
         mount(App, { target: el, props })
@@ -191,7 +263,31 @@ createInertiaApp({
 
 </CodeGroup>
 
-By default we recommend eager loading your components, which will result in a single JavaScript bundle. However, if you'd like to lazy-load your components, see our [code splitting](/v3/advanced/code-splitting) documentation.
+By default, page components are lazy-loaded, splitting each page into its own bundle. To eagerly bundle all pages into a single file instead, see the [code splitting](/v3/advanced/code-splitting) documentation.
+
+The `laravel-vite-plugin` package also provides a [`resolvePageComponent`](https://laravel.com/docs/vite#inertia) helper that may be used to resolve page components.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+
+resolve: name => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+```
+
+```js React icon="react"
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+
+resolve: name => resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),
+```
+
+```js Svelte icon="s"
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
+
+resolve: name => resolvePageComponent(`./Pages/${name}.svelte`, import.meta.glob('./Pages/**/*.svelte')),
+```
+
+</CodeGroup>
 
 ## Configuring Defaults
 
