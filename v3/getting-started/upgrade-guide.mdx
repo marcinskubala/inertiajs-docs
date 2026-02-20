@@ -242,36 +242,11 @@ You may publish the updated config file using:
 php artisan vendor:publish --tag=inertia-config --force
 ```
 
-### Resolve Callback Receives Page Object
-
-The `resolve` callback in `createInertiaApp` now receives the full page object as a second argument, giving you access to props, URL, and other page data when resolving components:
-
-```js
-createInertiaApp({
-    resolve: (name, page) => {
-        // page.props, page.url, etc. are now available
-    },
-    // ...
-})
-```
-
-This is a non-breaking addition. Existing resolve callbacks that only accept `name` will continue to work without changes.
-
-### Testing Concerns Removed
-
-The deprecated `Inertia\Testing\Concerns\Has`, `Inertia\Testing\Concerns\Matching`, and `Inertia\Testing\Concerns\Debugging` traits have been removed. These traits were deprecated in v1 and replaced by the `AssertableInertia` class. No action is required unless your application references these traits directly.
-
-### SSR Setup Simplified
-
-Inertia v3 introduces the `@inertiajs/vite` plugin, which automates the SSR setup during development. In dev mode, the Vite plugin handles SSR rendering directly, so no separate Node.js server is needed. See the [server-side rendering](/v3/advanced/server-side-rendering) documentation for the updated setup.
-
-### Miscellaneous
-
-#### ESM-Only Packages
+### ESM-Only Packages
 
 All Inertia packages now ship as ES Modules only. CommonJS `require()` imports are no longer supported. You should update any `require()` calls to use `import` statements instead.
 
-#### `qs` Dependency Removed
+### `qs` Dependency Removed
 
 The `qs` package has been replaced with a built-in query string implementation and is no longer included as a dependency of `@inertiajs/core`. Inertia's internal query string handling remains the same, but you should install `qs` directly if your application imports it.
 
@@ -279,6 +254,12 @@ The `qs` package has been replaced with a built-in query string implementation a
 npm install qs
 ```
 
-#### Middleware Priority
+### Testing Concerns Removed
+
+The deprecated `Inertia\Testing\Concerns\Has`, `Inertia\Testing\Concerns\Matching`, and `Inertia\Testing\Concerns\Debugging` traits have been removed. These traits were deprecated in v1 and replaced by the `AssertableInertia` class. No action is required unless your application references these traits directly.
+
+## Other Changes
+
+### Middleware Priority
 
 The Inertia middleware is now automatically registered in Laravel's [middleware priority](https://laravel.com/docs/middleware#sorting-middleware) list, ensuring it runs before middleware like `ThrottleRequests`. This fixes an issue where `PUT`/`PATCH`/`DELETE` requests that were rate-limited could receive a `302` redirect instead of the correct `303`, causing the browser to retry the original request method on the redirect target. No action is required.
