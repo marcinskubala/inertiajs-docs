@@ -87,7 +87,7 @@ The Svelte adapter now requires Svelte 5. Svelte 4 and below are no longer suppo
 
 ### Axios Removed
 
-Inertia no longer ships with or requires Axios. A built-in XHR client is used instead. If your application relies on Axios interceptors for Inertia requests, you may provide a custom HTTP client. See the [client-side setup](/v3/installation/client-side-setup) documentation for more details.
+Inertia no longer ships with or requires Axios. For most applications, this requires no changes. The built-in XHR client supports [interceptors](/v3/installation/client-side-setup#interceptors) as well, so Axios interceptors may be migrated directly. You may also continue using Axios via the [Axios adapter](/v3/installation/client-side-setup#using-axios), or provide a fully [custom HTTP client](/v3/installation/client-side-setup#custom-http-client).
 
 ### Event Renames
 
