@@ -100,6 +100,14 @@ The Svelte adapter now requires Svelte 5. Svelte 4 and below are no longer suppo
 
 Inertia no longer ships with or requires Axios. For most applications, this requires no changes. The built-in XHR client supports [interceptors](/v3/installation/client-side-setup#interceptors) as well, so Axios interceptors may be migrated directly. You may also continue using Axios via the [Axios adapter](/v3/installation/client-side-setup#using-axios), or provide a fully [custom HTTP client](/v3/installation/client-side-setup#custom-http-client).
 
+### `qs` Dependency Removed
+
+The `qs` package has been replaced with a built-in query string implementation and is no longer included as a dependency of `@inertiajs/core`. Inertia's internal query string handling remains the same, but you should install `qs` directly if your application imports it.
+
+```bash
+npm install qs
+```
+
 ### Event Renames
 
 Two global events have been renamed for clarity:
@@ -242,23 +250,13 @@ You may publish the updated config file using:
 php artisan vendor:publish --tag=inertia-config --force
 ```
 
-### ESM-Only Packages
-
-All Inertia packages now ship as ES Modules only. CommonJS `require()` imports are no longer supported. You should update any `require()` calls to use `import` statements instead.
-
-### `qs` Dependency Removed
-
-The `qs` package has been replaced with a built-in query string implementation and is no longer included as a dependency of `@inertiajs/core`. Inertia's internal query string handling remains the same, but you should install `qs` directly if your application imports it.
-
-```bash
-npm install qs
-```
-
 ### Testing Concerns Removed
 
 The deprecated `Inertia\Testing\Concerns\Has`, `Inertia\Testing\Concerns\Matching`, and `Inertia\Testing\Concerns\Debugging` traits have been removed. These traits were deprecated in v1 and replaced by the `AssertableInertia` class. No action is required unless your application references these traits directly.
 
 ## Other Changes
+
+---
 
 ### SSR in Development
 
@@ -298,3 +296,11 @@ return Inertia::render('Dashboard', [
     ],
 ]);
 ```
+
+### ESM-Only Packages
+
+All Inertia packages now ship as ES Modules only. CommonJS `require()` imports are no longer supported. You should update any `require()` calls to use `import` statements instead.
+
+### Page Object Changes
+
+The `clearHistory` and `encryptHistory` properties in the [page object](/v3/core-concepts/the-protocol#the-page-object) are now optional and only included in the response when `true`. Previously, every response included `"clearHistory": false` and `"encryptHistory": false` even when history wasn't being cleared or encrypted.

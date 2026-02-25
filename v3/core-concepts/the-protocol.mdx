@@ -67,8 +67,7 @@ X-Inertia: true
     },
     "url": "/events/80",
     "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
-    "encryptHistory": true,
-    "clearHistory": false
+    "encryptHistory": true
 }
 ```
 
@@ -225,12 +224,12 @@ Inertia shares data between the server and client via a page object. This object
 
 <ParamField body="encryptHistory" type="boolean">
   Whether or not to [encrypt the current page's history
-  state](/v3/security/history-encryption).
+  state](/v3/security/history-encryption). Only included when `true`.
 </ParamField>
 
 <ParamField body="clearHistory" type="boolean">
   Whether or not to clear any [encrypted history
-  state](/v3/security/history-encryption#clearing-history).
+  state](/v3/security/history-encryption#clearing-history). Only included when `true`.
 </ParamField>
 
 <ParamField body="preserveFragment" type="boolean">
@@ -290,9 +289,7 @@ A minimal page object contains the core properties.
     }
   },
   "url": "/user/123",
-  "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
-  "clearHistory": false,
-  "encryptHistory": false
+  "version": "6b16b94d7c51cbe5b1fa42aac98241d5"
 }
 ```
 
@@ -311,8 +308,6 @@ When using deferred props, the page object includes a `deferredProps` configurat
   },
   "url": "/posts",
   "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
-  "clearHistory": false,
-  "encryptHistory": false,
   "deferredProps": {
     "default": ["comments", "analytics"],
     "sidebar": ["relatedPosts"]
@@ -356,8 +351,6 @@ When using merge props, additional configuration is included.
   },
   "url": "/feed",
   "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
-  "clearHistory": false,
-  "encryptHistory": false,
   "mergeProps": ["posts"],
   "prependProps": ["notifications"],
   "deepMergeProps": ["conversations"],
@@ -389,8 +382,6 @@ When using [Infinite scroll](/v3/data-props/infinite-scroll), the page object in
   },
   "url": "/posts?page=1",
   "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
-  "clearHistory": false,
-  "encryptHistory": false,
   "mergeProps": ["posts.data"],
   "scrollProps": {
     "posts": {
@@ -425,8 +416,6 @@ When using [once props](/v3/data-props/once-props), the page object includes an 
   },
   "url": "/billing/plans",
   "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
-  "clearHistory": false,
-  "encryptHistory": false,
   "onceProps": {
     "plans": {
       "prop": "plans",
@@ -462,8 +451,6 @@ Content-Type: application/json
     },
     "url": "/billing/upgrade",
     "version": "6b16b94d7c51cbe5b1fa42aac98241d5",
-    "clearHistory": false,
-    "encryptHistory": false,
     "onceProps": {
         "plans": {
             "prop": "plans",
