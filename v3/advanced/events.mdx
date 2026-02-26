@@ -475,24 +475,24 @@ The `error` event fires when validation errors are present on "successful" page 
 ```js Vue icon="vuejs"
 import { router } from "@inertiajs/vue3";
 
-router.on("error", (errors) => {
-  console.log(errors);
+router.on("error", (event) => {
+  console.log(event.detail.errors);
 });
 ```
 
 ```jsx React icon="react"
 import { router } from "@inertiajs/react";
 
-router.on("error", (errors) => {
-  console.log(errors);
+router.on("error", (event) => {
+  console.log(event.detail.errors);
 });
 ```
 
 ```js Svelte icon="s"
 import { router } from "@inertiajs/svelte";
 
-router.on("error", (errors) => {
-  console.log(errors);
+router.on("error", (event) => {
+  console.log(event.detail.errors);
 });
 ```
 
@@ -721,7 +721,7 @@ The `prefetching` event fires when the router starts prefetching a page.
 import { router } from "@inertiajs/vue3";
 
 router.on("prefetching", (event) => {
-  console.log(`Prefetching ${event.detail.page.url}`);
+  console.log(`Prefetching ${event.detail.visit.url}`);
 });
 ```
 
@@ -729,7 +729,7 @@ router.on("prefetching", (event) => {
 import { router } from "@inertiajs/react";
 
 router.on("prefetching", (event) => {
-  console.log(`Prefetching ${event.detail.page.url}`);
+  console.log(`Prefetching ${event.detail.visit.url}`);
 });
 ```
 
@@ -737,7 +737,7 @@ router.on("prefetching", (event) => {
 import { router } from "@inertiajs/svelte";
 
 router.on("prefetching", (event) => {
-  console.log(`Prefetching ${event.detail.page.url}`);
+  console.log(`Prefetching ${event.detail.visit.url}`);
 });
 ```
 
@@ -755,7 +755,7 @@ The `prefetched` event fires when the router has successfully prefetched a page.
 import { router } from "@inertiajs/vue3";
 
 router.on("prefetched", (event) => {
-  console.log(`Prefetched ${event.detail.page.url}`);
+  console.log(`Prefetched ${event.detail.visit.url}`);
 });
 ```
 
@@ -763,7 +763,7 @@ router.on("prefetched", (event) => {
 import { router } from "@inertiajs/react";
 
 router.on("prefetched", (event) => {
-  console.log(`Prefetched ${event.detail.page.url}`);
+  console.log(`Prefetched ${event.detail.visit.url}`);
 });
 ```
 
@@ -771,7 +771,7 @@ router.on("prefetched", (event) => {
 import { router } from "@inertiajs/svelte";
 
 router.on("prefetched", (event) => {
-  console.log(`Prefetched ${event.detail.page.url}`);
+  console.log(`Prefetched ${event.detail.visit.url}`);
 });
 ```
 
