@@ -134,8 +134,8 @@ You may also handle these events per-visit using the new `onHttpException` and `
 
 ```js
 router.post('/users', data, {
-    onHttpException: (event) => { ... },
-    onNetworkError: (event) => { ... },
+    onHttpException: (response) => { ... },
+    onNetworkError: (error) => { ... },
 })
 ```
 
