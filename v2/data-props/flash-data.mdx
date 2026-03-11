@@ -259,26 +259,8 @@ router.flash(() => ({}))
 
 ## TypeScript
 
-You may configure the flash data type globally using TypeScript's declaration merging.
+You may configure the flash data type globally using [TypeScript's declaration merging](/v2/advanced/typescript#flash-data).
 
-```ts
-// global.d.ts
-import '@inertiajs/core'
+## Testing
 
-declare module '@inertiajs/core' {
-    export interface InertiaConfig {
-        flashDataType: {
-            toast?: {
-                type: 'success' | 'error'
-                message: string
-            }
-        }
-    }
-}
-```
-
-<Note>
-The `import` statement (or `export {}`) is required to make this file a module. Without it, `declare module` replaces the module definition instead of augmenting it.
-</Note>
-
-With this configuration, `page.flash.toast` will be properly typed as `{ type: "success" | "error"; message: string } | undefined`.
+For information on testing flash data, see the [testing documentation](/v2/advanced/testing#testing-flash-data).

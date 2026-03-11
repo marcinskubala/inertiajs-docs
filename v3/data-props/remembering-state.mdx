@@ -2,6 +2,10 @@
 title: Remembering State
 ---
 
+import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
+
+<V3BetaWarning />
+
 When navigating browser history, Inertia restores pages using prop data cached in history state. However, Inertia does not restore local page component state since this is beyond its reach. This can lead to outdated pages in your browser history.
 
 For example, if a user partially completes a form, then navigates away, and then returns back, the form will be reset and their work will be lost.
@@ -15,35 +19,35 @@ To save local component state to the history state, use the `useRemember` featur
 <CodeGroup>
 
 ```js Vue icon="vuejs"
-import { useRemember } from '@inertiajs/vue3'
+import { useRemember } from "@inertiajs/vue3";
 
 const form = useRemember({
-    first_name: null,
-    last_name: null,
-})
+  first_name: null,
+  last_name: null,
+});
 ```
 
 ```jsx React icon="react"
-import { useRemember } from '@inertiajs/react'
+import { useRemember } from "@inertiajs/react";
 
 export default function Profile() {
-    const [formState, setFormState] = useRemember({
-        first_name: null,
-        last_name: null,
-        // ...
-    })
-
+  const [formState, setFormState] = useRemember({
+    first_name: null,
+    last_name: null,
     // ...
+  });
+
+  // ...
 }
 ```
 
 ```js Svelte icon="s"
-import { useRemember } from '@inertiajs/svelte'
+import { useRemember } from "@inertiajs/svelte";
 
 const form = useRemember({
-    first_name: null,
-    last_name: null,
-})
+  first_name: null,
+  last_name: null,
+});
 
 // ...
 ```
@@ -59,32 +63,41 @@ If your page contains multiple components that use the remember functionality pr
 <CodeGroup>
 
 ```js Vue icon="vuejs"
-import { useRemember } from '@inertiajs/vue3'
+import { useRemember } from "@inertiajs/vue3";
 
-const form = useRemember({
+const form = useRemember(
+  {
     first_name: null,
     last_name: null,
-}, 'Users/Create')
+  },
+  "Users/Create",
+);
 ```
 
 ```jsx React icon="react"
-import { useRemember } from '@inertiajs/react'
+import { useRemember } from "@inertiajs/react";
 
 export default function Profile() {
-    const [formState, setFormState] = useRemember({
-        first_name: null,
-        last_name: null,
-    }, 'Users/Create')
+  const [formState, setFormState] = useRemember(
+    {
+      first_name: null,
+      last_name: null,
+    },
+    "Users/Create",
+  );
 }
 ```
 
 ```js Svelte icon="s"
-import { page, useRemember } from '@inertiajs/svelte'
+import { page, useRemember } from "@inertiajs/svelte";
 
-const form = useRemember({
+const form = useRemember(
+  {
     first_name: null,
     last_name: null,
-}, 'Users/Create')
+  },
+  "Users/Create",
+);
 ```
 
 </CodeGroup>
@@ -94,68 +107,77 @@ If you have multiple instances of the same component on the page using the remem
 <CodeGroup>
 
 ```js Vue icon="vuejs"
-import { useRemember } from '@inertiajs/vue3'
+import { useRemember } from "@inertiajs/vue3";
 
-const props = defineProps({ user: Object })
+const props = defineProps({ user: Object });
 
-const form = useRemember({
+const form = useRemember(
+  {
     first_name: null,
     last_name: null,
-}, `Users/Edit:${props.user.id}`)
+  },
+  `Users/Edit:${props.user.id}`,
+);
 ```
 
 ```jsx React icon="react"
-import { useRemember } from '@inertiajs/react'
+import { useRemember } from "@inertiajs/react";
 
 export default function Profile() {
-    const [formState, setFormState] = useRemember({
-        first_name: props.user.first_name,
-        last_name: props.user.last_name,
-    }, `Users/Edit:${this.user.id}`)
+  const [formState, setFormState] = useRemember(
+    {
+      first_name: props.user.first_name,
+      last_name: props.user.last_name,
+    },
+    `Users/Edit:${this.user.id}`,
+  );
 }
 ```
 
 ```js Svelte icon="s"
-import { page, useRemember } from '@inertiajs/svelte'
+import { page, useRemember } from "@inertiajs/svelte";
 
-const form = useRemember({
+const form = useRemember(
+  {
     first_name: $page.props.user.first_name,
     last_name: $page.props.user.last_name,
-}, `Users/Edit:${$page.props.user.id}`)
+  },
+  `Users/Edit:${$page.props.user.id}`,
+);
 ```
 
 </CodeGroup>
 
 ## Form Helper
 
-If you're using the [Inertia form helper](/v2/the-basics/forms#form-helper), you can pass a unique form key as the first argument when instantiating your form. This will cause the form data and errors to automatically be remembered.
+If you're using the [Inertia form helper](/v3/the-basics/forms#form-helper), you can pass a unique form key as the first argument when instantiating your form. This will cause the form data and errors to automatically be remembered.
 
 <CodeGroup>
 
 ```js Vue icon="vuejs"
-import { useForm } from '@inertiajs/vue3'
+import { useForm } from "@inertiajs/vue3";
 
-const form = useForm('CreateUser', data)
-const form = useForm(`EditUser:${props.user.id}`, data)
+const form = useForm("CreateUser", data);
+const form = useForm(`EditUser:${props.user.id}`, data);
 ```
 
 ```js React icon="react"
-import { useForm } from '@inertiajs/react'
+import { useForm } from "@inertiajs/react";
 
-const form = useForm('CreateUser', data)
-const form = useForm(`EditUser:${user.id}`, data)
+const form = useForm("CreateUser", data);
+const form = useForm(`EditUser:${user.id}`, data);
 ```
 
 ```js Svelte icon="s"
-import { useForm } from '@inertiajs/svelte'
+import { useForm } from "@inertiajs/svelte";
 
-const form = useForm('CreateUser', data)
-const form = useForm(`EditUser:${user.id}`, data)
+const form = useForm("CreateUser", data);
+const form = useForm(`EditUser:${user.id}`, data);
 ```
 
 </CodeGroup>
 
-You may [exclude specific fields](/v2/the-basics/forms#excluding-fields) from being remembered using the `dontRemember()` method. This is useful for sensitive fields like passwords that should not be stored in history state.
+You may [exclude specific fields](/v3/the-basics/forms#excluding-fields) from being remembered using the `dontRemember()` method. This is useful for sensitive fields like passwords that should not be stored in history state.
 
 ## Manually Saving State
 
@@ -166,37 +188,41 @@ However, it's also possible to manage this manually using the underlying `rememb
 <CodeGroup>
 
 ```js Vue icon="vuejs"
-import { router } from '@inertiajs/vue3'
+import { router } from "@inertiajs/vue3";
 
 // Save local component state to history state
-router.remember(data, 'my-key')
+router.remember(data, "my-key");
 
 // Restore local component state from history state
-let data = router.restore('my-key')
+let data = router.restore("my-key");
 ```
 
 ```js React icon="react"
-import { router } from '@inertiajs/react'
+import { router } from "@inertiajs/react";
 
 // Save local component state to history state
-router.remember(data, 'my-key')
+router.remember(data, "my-key");
 
 // Restore local component state from history state
-let data = router.restore('my-key')
+let data = router.restore("my-key");
 ```
 
 ```js Svelte icon="s"
-import { router } from '@inertiajs/svelte'
+import { router } from "@inertiajs/svelte";
 
 // Save local component state to history state
-router.remember(data, 'my-key')
+router.remember(data, "my-key");
 
 // Restore local component state from history state
-let data = router.restore('my-key')
+let data = router.restore("my-key");
 ```
 
 </CodeGroup>
 
 <Warning>
-Some browsers limit the number of `history.replaceState()` calls allowed within a short time period. Inertia catches this error and logs it to the console, but the state update will be lost. Avoid calling `router.remember()` too frequently, and consider debouncing or batching state updates in high-frequency scenarios.
+  Some browsers limit the number of `history.replaceState()` calls allowed
+  within a short time period. Inertia catches this error and logs it to the
+  console, but the state update will be lost. Avoid calling `router.remember()`
+  too frequently, and consider debouncing or batching state updates in
+  high-frequency scenarios.
 </Warning>

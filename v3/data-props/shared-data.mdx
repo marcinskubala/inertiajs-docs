@@ -2,13 +2,17 @@
 title: Shared Data
 ---
 
+import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
+
+<V3BetaWarning />
+
 Sometimes you need to access specific pieces of data on numerous pages within your application. For example, you may need to display the current user in the site header. Passing this data manually in each response across your entire application is cumbersome. Thankfully, there is a better option: shared data.
 
 ## Sharing Data
 
 Inertia's server-side adapters all provide a method of making shared data available for every request. This is typically done outside of your controllers. Shared data will be automatically merged with the page props provided in your controller.
 
-In Laravel applications, this is typically handled by the `HandleInertiaRequests` middleware that is automatically installed when installing the [server-side adapter](/v2/installation/server-side-setup#middleware).
+In Laravel applications, this is typically handled by the `HandleInertiaRequests` middleware that is automatically installed when installing the [server-side adapter](/v3/installation/server-side-setup#middleware).
 
 ```php
 class HandleInertiaRequests extends Middleware
@@ -49,7 +53,7 @@ Page props and shared data are merged together, so be sure to namespace your sha
 
 ## Sharing Once Props
 
-You may share data that is resolved only once and remembered by the client across subsequent navigations using [once props](/v2/data-props/once-props).
+You may share data that is resolved only once and remembered by the client across subsequent navigations using [once props](/v3/data-props/once-props).
 
 ```php
 class HandleInertiaRequests extends Middleware
@@ -143,8 +147,8 @@ export default function Layout({ children }) {
 
 ## TypeScript
 
-You may configure the shared props type globally using [TypeScript's declaration merging](/v2/advanced/typescript#shared-page-props).
+You may configure the shared props type globally using [TypeScript's declaration merging](/v3/advanced/typescript#shared-page-props).
 
 ## Flash Data
 
-For one-time notifications like toast messages or success alerts, you may use [flash data](/v2/data-props/flash-data). Unlike shared data, flash data is not persisted in the browser's history state, so it won't reappear when navigating through history.
+For one-time notifications like toast messages or success alerts, you may use [flash data](/v3/data-props/flash-data). Unlike shared data, flash data is not persisted in the browser's history state, so it won't reappear when navigating through history.
