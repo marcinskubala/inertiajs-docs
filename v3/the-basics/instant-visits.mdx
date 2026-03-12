@@ -206,6 +206,16 @@ return [
 
 After enabling this option and regenerating your Wayfinder routes, each route definition will include the component name that Inertia renders for that route.
 
+### Conditional Components
+
+A controller action may conditionally render different components, preventing the `instant` prop from determining which component to use. You may call the `withComponent()` method on the Wayfinder route function to specify the target component.
+
+```js
+import { show } from "App/Http/Controllers/DashboardController";
+
+router.visit(show.withComponent("Dashboard/Admin"));
+```
+
 ## Disabling Shared Prop Keys
 
 You may disable the `sharedProps` metadata key in your `config/inertia.php` configuration file. The server will still resolve and include shared prop values in the response, but the metadata listing which keys are shared will be omitted. Without this list, the client cannot identify which props to carry over during instant visits.
