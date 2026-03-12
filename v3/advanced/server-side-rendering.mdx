@@ -112,7 +112,9 @@ php artisan inertia:start-ssr
 
 The Vite plugin reuses your `app.js` entry point for both browser and SSR rendering by default, so no separate file is needed. The plugin detects the `data-server-rendered` attribute to decide whether to hydrate or mount, and the `setup` and `resolve` callbacks are optional.
 
-If you need custom SSR logic (such as Vue plugins that should only run on the server), you may create a separate `resources/js/ssr.js` file.
+Most app customizations, such as registering plugins or wrapping with providers, may be handled using the [`withApp` callback](/v3/installation/client-side-setup#customizing-the-app) in your main entry point. A separate SSR entry point is only needed when you require completely different setup logic for the server.
+
+You may create a separate `resources/js/ssr.js` file for this purpose.
 
 <CodeGroup>
 
