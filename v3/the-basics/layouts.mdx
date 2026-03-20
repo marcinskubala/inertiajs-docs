@@ -450,24 +450,6 @@ export default Dashboard
 
 </CodeGroup>
 
-Named layouts may also include static props using the same tuple syntax.
-
-```js
-Dashboard.layout = {
-    app: [AppLayout, { theme: 'dark' }],
-    content: [ContentLayout, { padding: 'sm' }],
-}
-```
-
-For unnamed nested layouts with static props, use an array of tuples.
-
-```js
-Dashboard.layout = [
-    [AppLayout, { title: 'Dashboard' }],
-    [ContentLayout, { padding: 'sm' }],
-]
-```
-
 ### Callback Props
 
 Sometimes layout props need to be derived from the current page's props. A callback function receives the page props and returns a layout definition with computed static props.
@@ -565,7 +547,7 @@ setLayoutProps({
 
 ### Targeting Named Layouts
 
-You may define your persistent layouts as a named object, allowing you to target specific layouts with props.
+[Nested layouts](#nested-layouts) may also be defined as a named object instead of an array, allowing you to target specific layouts with props.
 
 <CodeGroup>
 
@@ -637,7 +619,21 @@ setLayoutPropsFor('sidebar', {
 
 </CodeGroup>
 
-Named layout props are merged with shared layout props, with named props taking priority.
+[Nested layouts](#nested-layouts) and named layouts may also include static props using the tuple syntax.
+
+```js
+// Nested layouts with static props
+Dashboard.layout = [
+    [AppLayout, { title: 'Dashboard' }],
+    [ContentLayout, { padding: 'sm' }],
+]
+
+// Named layouts with static props
+Dashboard.layout = {
+    app: [AppLayout, { theme: 'dark' }],
+    content: [ContentLayout, { padding: 'sm' }],
+}
+```
 
 ### Merge Priority
 
