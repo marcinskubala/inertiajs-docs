@@ -86,16 +86,6 @@ You should also clear your cached views since the `@inertia` Blade directive out
 php artisan view:clear
 ```
 
-Also, if you are using the `inertia` attribute in your Blade files `<head>` section, you should change it to `data-inertia`:
-
-```html
-<!-- Before (v2) -->
-<title inertia>My Website</title>
-
-<!-- After (v3) -->
-<title data-inertia>My Website</title>
-```
-
 
 ## Breaking Changes
 
@@ -222,6 +212,18 @@ createInertiaApp({
 ```
 
 Initial page data is now always passed via a `<script type="application/json">` element. The legacy `data-page` attribute approach is no longer supported.
+
+### Head Element Attributes
+
+The `inertia` attribute used on elements in your root Blade template's `<head>` section has been renamed to `data-inertia`. You should update any head elements that use this attribute:
+
+```html
+<!-- Before (v2) -->
+<title inertia>My Website</title>
+
+<!-- After (v3) -->
+<title data-inertia>My Website</title>
+```
 
 ### Progress Indicator Exports Removed
 
