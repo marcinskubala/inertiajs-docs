@@ -2,10 +2,6 @@
 title: TypeScript
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 Inertia provides first-class TypeScript support. You may configure global types using declaration merging, and pass generics to hooks and router methods for type-safe props, forms, and state management.
 
 ## Using pnpm
@@ -42,6 +38,14 @@ declare module "@inertiajs/core" {
       toast?: { type: "success" | "error"; message: string };
     };
     errorValueType: string[];
+    layoutProps: {
+      title: string;
+      showSidebar: boolean;
+    };
+    namedLayoutProps: {
+      app: { title: string; theme: "light" | "dark" };
+      content: { padding: string; maxWidth: string };
+    };
   }
 }
 ```
@@ -77,6 +81,30 @@ By default, validation error values are typed as `string`. You may configure Typ
 
 ```ts
 errorValueType: string[]
+```
+
+### Layout Props
+
+The `layoutProps` option types the data accepted by `setLayoutProps()`. The `namedLayoutProps` option types the data accepted by `setLayoutProps('name', props)`, keyed by layout name.
+
+```ts
+layoutProps: {
+    title: string
+    showSidebar: boolean
+}
+namedLayoutProps: {
+    app: { title: string; theme: 'light' | 'dark' }
+    content: { padding: string; maxWidth: string }
+}
+```
+
+With this configuration, `setLayoutProps({ title: 'Dashboard' })` is type-checked, and `setLayoutProps('app', { theme: 'dark' })` validates both the layout name and its props.
+
+You may also pass a generic type parameter directly to `setLayoutProps` for ad-hoc typing without configuring the global `InertiaConfig` interface.
+
+```ts
+setLayoutProps<{ custom: string }>({ custom: 'value' })
+setLayoutProps<{ collapsed: boolean }>('sidebar', { collapsed: true })
 ```
 
 <Note>
@@ -352,6 +380,75 @@ const form = useFormContext<UserForm>();
     import { useFormContext } from '@inertiajs/svelte'
 
     const form = useFormContext<UserForm>()
+</script>
+```
+
+</CodeGroup>
+
+## HTTP Helper
+
+The [`useHttp`](/v3/the-basics/http-requests) hook accepts two generic type parameters: the form data type and an optional default response type.
+
+```ts
+import { useHttp } from "@inertiajs/react";
+
+interface UserForm {
+  name: string;
+  email: string;
+}
+
+interface UserResponse {
+  id: number;
+  name: string;
+}
+
+const http = useHttp<UserForm, UserResponse>({ name: "", email: "" });
+```
+
+## Layout Callbacks
+
+The `LayoutCallback` type provides type safety for [layout callbacks](/v3/the-basics/layouts#callback-props). The callback receives the page's props (typed via your global `sharedPageProps` configuration) and should return a valid layout definition.
+
+<CodeGroup>
+
+```tsx React icon="react"
+import type { LayoutCallback } from "@inertiajs/react";
+import Layout from "./Layout";
+
+const Profile = () => <h1>Profile</h1>;
+
+const callback: LayoutCallback = (props) => {
+  return [Layout, { title: props.auth.user?.name }];
+};
+
+Profile.layout = callback;
+
+export default Profile;
+```
+
+```vue Vue icon="vuejs"
+<script lang="ts">
+import Layout from "./Layout.vue";
+import type { LayoutCallback } from "@inertiajs/vue3";
+
+const callback: LayoutCallback = (props) => {
+  return [Layout, { title: props.auth.user?.name }];
+};
+
+export default {
+  layout: callback,
+};
+</script>
+```
+
+```svelte Svelte icon="s"
+<script module lang="ts">
+    import Layout from './Layout.svelte'
+    import type { LayoutCallback } from '@inertiajs/svelte'
+
+    export const layout: LayoutCallback = (props) => {
+        return [Layout, { title: props.auth.user?.name }]
+    }
 </script>
 ```
 

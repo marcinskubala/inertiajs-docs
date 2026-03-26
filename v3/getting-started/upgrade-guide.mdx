@@ -2,10 +2,6 @@
 title: Upgrade Guide for v3.0
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 You can find the legacy docs for Inertia.js v2.0 at [inertiajs.com/docs/v2](/v2).
 
 ## What's New
@@ -44,6 +40,7 @@ This release also includes several additional improvements:
 - [Built-in HTTP interceptors](/v3/installation/client-side-setup#interceptors) without Axios
 - [Default layout](/v3/the-basics/layouts#default-layouts) option in `createInertiaApp`
 - [`preserveErrors`](/v3/data-props/partial-reloads#preserving-errors) option to preserve validation errors during partial reloads
+- [Blade components](/v3/installation/server-side-setup#setup-root-template) as an alternative to the `@inertia` and `@inertiaHead` directives, with SSR head fallback support
 
 ## Upgrade Dependencies
 
@@ -52,15 +49,15 @@ To upgrade to Inertia.js v3.0, first use npm to install the client-side adapter 
 <CodeGroup>
 
 ```bash Vue icon="vuejs"
-npm install @inertiajs/vue3@^3.0.0-beta
+npm install @inertiajs/vue3@^3.0
 ```
 
 ```bash React icon="react"
-npm install @inertiajs/react@^3.0.0-beta
+npm install @inertiajs/react@^3.0
 ```
 
 ```bash Svelte icon="s"
-npm install @inertiajs/svelte@^3.0.0-beta
+npm install @inertiajs/svelte@^3.0
 ```
 
 </CodeGroup>
@@ -68,13 +65,13 @@ npm install @inertiajs/svelte@^3.0.0-beta
 You may also install the new optional Vite plugin, which provides a simplified SSR setup and a `pages` shorthand for component resolution:
 
 ```bash
-npm install @inertiajs/vite@^3.0.0-beta
+npm install @inertiajs/vite@^3.0
 ```
 
 Next, upgrade the `inertiajs/inertia-laravel` package:
 
 ```bash
-composer require inertiajs/inertia-laravel:^3.0.0-beta
+composer require inertiajs/inertia-laravel:^3.0
 ```
 
 After upgrading, republish the Inertia configuration file since it has been restructured in v3. You should review the updated config file and re-apply any customizations:
@@ -130,6 +127,14 @@ The `qs` package has been replaced with a built-in query string implementation a
 npm install qs
 ```
 
+### `lodash-es` Dependency Removed
+
+The `lodash-es` package has been replaced with `es-toolkit` and is no longer included as a dependency of `@inertiajs/core`. You should install `lodash-es` directly if your application imports it.
+
+```bash
+npm install lodash-es
+```
+
 ### Event Renames
 
 Two global events have been renamed for clarity:
@@ -173,15 +178,17 @@ router.post('/users', data, {
 
 ### `router.cancel()` Replaced
 
-The `router.cancel()` method has been replaced by `router.cancelAll()`, which provides granular control over which request types to cancel:
+The `router.cancel()` method has been replaced by `router.cancelAll()`. In v2, `cancel()` only cancelled synchronous requests. The new `cancelAll()` method cancels all synchronous, asynchronous, and prefetch requests by default. You may pass options to limit which request types are cancelled.
 
 ```js
-// Before (v2)
+// Before (v2) — only cancelled sync requests
 router.cancel()
 
-// After (v3)
+// After (v3) — cancels all request types
 router.cancelAll()
-router.cancelAll({ async: false, prefetch: false }) // Cancel only sync requests
+
+// To match v2 behavior (sync only)...
+router.cancelAll({ async: false, prefetch: false })
 ```
 
 See the [visit cancellation](/v3/the-basics/manual-visits#visit-cancellation) documentation for more details.
@@ -287,6 +294,26 @@ The deprecated `Inertia\Testing\Concerns\Has`, `Inertia\Testing\Concerns\Matchin
 
 ---
 
+### Blade Components
+
+Inertia now provides `<x-inertia::head>` and `<x-inertia::app>` Blade components as an alternative to the `@inertiaHead` and `@inertia` directives. The head component accepts fallback content via its slot that only renders when SSR is not active, solving the long-standing issue of duplicate `<title>` tags in SSR applications.
+
+```blade resources/views/app.blade.php
+<html>
+    <head>
+        @vite('resources/js/app.js')
+        <x-inertia::head>
+            <title>{{ config('app.name') }}</title>
+        </x-inertia::head>
+    </head>
+    <body>
+        <x-inertia::app />
+    </body>
+</html>
+```
+
+The existing directives continue to work and require no changes.
+
 ### SSR in Development
 
 When using the new `@inertiajs/vite` plugin, SSR works automatically during development by simply running `npm run dev`. You no longer need to build your SSR bundle with `vite build --ssr` or start a separate Node.js server with `php artisan inertia:start-ssr` during development. These commands are now only required for [production deployments](/v3/advanced/server-side-rendering#running-the-ssr-server).
@@ -325,6 +352,10 @@ return Inertia::render('Dashboard', [
     ],
 ]);
 ```
+
+### ES2022 Build Target
+
+Inertia packages now target ES2022, up from ES2020 in v2. You may use the [`@vitejs/plugin-legacy`](https://www.npmjs.com/package/@vitejs/plugin-legacy) Vite plugin if your application needs to support older browsers.
 
 ### ESM-Only Packages
 

@@ -2,10 +2,6 @@
 title: HTTP Requests
 ---
 
-import V3BetaWarning from "/snippets/v3-beta-warning.mdx";
-
-<V3BetaWarning />
-
 import { ClientSpecific } from "/snippets/client-specific.jsx"
 import { ReactSpecific } from "/snippets/react-specific.jsx"
 import { SvelteSpecific } from "/snippets/svelte-specific.jsx"
@@ -132,7 +128,7 @@ http.submit(method, url, options)
 
 </CodeGroup>
 
-Each method returns a `Promise` that resolves with the parsed JSON response data.
+Each method returns a `Promise` that resolves with the parsed JSON response data. TypeScript users may [type the request data and response](/v3/advanced/typescript#http-helper).
 
 <CodeGroup>
 
@@ -158,6 +154,29 @@ const response = await http.post('/api/comments', {
         console.log(errors)
     },
 })
+```
+
+</CodeGroup>
+
+## Multiple Requests
+
+Each `useHttp` instance tracks its own `processing`, `errors`, and other reactive state. When making independent requests, you may create a separate instance for each one so their states don't collide.
+
+<CodeGroup>
+
+```js Vue icon="vuejs"
+const search = useHttp({ query: '' })
+const upload = useHttp({ file: null })
+```
+
+```js React icon="react"
+const search = useHttp({ query: '' })
+const upload = useHttp({ file: null })
+```
+
+```js Svelte icon="s"
+const search = useHttp({ query: '' })
+const upload = useHttp({ file: null })
 ```
 
 </CodeGroup>
